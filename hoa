@@ -1,0 +1,289 @@
+import random
+import streamlit as st
+
+# Cấu hình giao diện trang web hường phấn công chúa
+st.set_page_config(
+    page_title="Phòng Thí Nghiệm Công Chúa Hóa Học", page_icon="👑", layout="centered"
+)
+
+# CSS tùy chỉnh giao diện màu hồng pastel và các thẻ cute
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #fff1f2;
+    }
+    .main-title {
+        text-align: center;
+        color: #be185d;
+        font-family: 'Georgia', serif;
+        font-weight: bold;
+    }
+    .sub-title {
+        text-align: center;
+        color: #e11d48;
+        font-style: italic;
+    }
+    .card {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 15px;
+        border: 2px solid #f472b6;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    </style>
+""",
+    unsafe_allow_html=True,
+)
+
+# Dữ liệu nguyên tố hóa học (Chuẩn IUPAC tiếng Anh)
+ELEMENTS = [
+    {"symbol": "H", "name": "Hydrogen", "number": 1, "mass": 1, "valence": "I"},
+    {"symbol": "He", "name": "Helium", "number": 2, "mass": 4, "valence": "0"},
+    {"symbol": "Li", "name": "Lithium", "number": 3, "mass": 7, "valence": "I"},
+    {"symbol": "Be", "name": "Beryllium", "number": 4, "mass": 9, "valence": "II"},
+    {"symbol": "B", "name": "Boron", "number": 5, "mass": 11, "valence": "III"},
+    {
+        "symbol": "C",
+        "name": "Carbon",
+        "number": 6,
+        "mass": 12,
+        "valence": "IV, II",
+    },
+    {
+        "symbol": "N",
+        "name": "Nitrogen",
+        "number": 7,
+        "mass": 14,
+        "valence": "III, IV",
+    },
+    {"symbol": "O", "name": "Oxygen", "number": 8, "mass": 16, "valence": "II"},
+    {"symbol": "F", "name": "Fluorine", "number": 9, "mass": 19, "valence": "I"},
+    {"symbol": "Ne", "name": "Neon", "number": 10, "mass": 20, "valence": "0"},
+    {"symbol": "Na", "name": "Sodium", "number": 11, "mass": 23, "valence": "I"},
+    {
+        "symbol": "Mg",
+        "name": "Magnesium",
+        "number": 12,
+        "mass": 24,
+        "valence": "II",
+    },
+    {
+        "symbol": "Al",
+        "name": "Aluminum",
+        "number": 13,
+        "mass": 27,
+        "valence": "III",
+    },
+    {"symbol": "Si", "name": "Silicon", "number": 14, "mass": 28, "valence": "IV"},
+    {
+        "symbol": "P",
+        "name": "Phosphorus",
+        "number": 15,
+        "mass": 31,
+        "valence": "III, V",
+    },
+    {
+        "symbol": "S",
+        "name": "Sulfur",
+        "number": 16,
+        "mass": 32,
+        "valence": "II, IV, VI",
+    },
+    {
+        "symbol": "Cl",
+        "name": "Chlorine",
+        "number": 17,
+        "mass": 35.5,
+        "valence": "I",
+    },
+    {"symbol": "K", "name": "Potassium", "number": 19, "mass": 39, "valence": "I"},
+    {"symbol": "Ca", "name": "Calcium", "number": 20, "mass": 40, "valence": "II"},
+    {
+        "symbol": "Fe",
+        "name": "Iron",
+        "number": 26,
+        "mass": 56,
+        "valence": "II, III",
+    },
+    {
+        "symbol": "Cu",
+        "name": "Copper",
+        "number": 29,
+        "mass": 64,
+        "valence": "I, II",
+    },
+    {"symbol": "Zn", "name": "Zinc", "number": 30, "mass": 65, "valence": "II"},
+    {"symbol": "Ag", "name": "Silver", "number": 47, "mass": 108, "valence": "I"},
+    {"symbol": "Ba", "name": "Barium", "number": 56, "mass": 137, "valence": "II"},
+    {
+        "symbol": "Au",
+        "name": "Gold",
+        "number": 79,
+        "mass": 197,
+        "valence": "I, III",
+    },
+    {
+        "symbol": "Hg",
+        "name": "Mercury",
+        "number": 80,
+        "mass": 201,
+        "valence": "I, II",
+    },
+    {
+        "symbol": "Pb",
+        "name": "Lead",
+        "number": 82,
+        "mass": 207,
+        "valence": "II, IV",
+    },
+]
+
+# Khởi tạo session state để lưu điểm số và trạng thái
+if "score" not in st.session_state:
+  st.session_state.score = 0
+if "page" not in st.session_state:
+  st.session_state.page = "home"
+
+# --- TRANG CHỦ ---
+if st.session_state.page == "home":
+  st.markdown(
+      "<h1 class='main-title'>👑 VƯƠNG QUỐC HÓA HỌC CÔNG CHÚA 🌸</h1>",
+      unsafe_allow_html=True,
+  )
+  st.markdown(
+      "<p class='sub-title'>Chọn thử thách ngọt ngào để chinh phục các nguyên"
+      " tố! ✨</p>",
+      unsafe_allow_html=True,
+  )
+
+  col1, col2 = st.columns(2)
+
+  with col1:
+    st.markdown(
+        "<div class='card'><h3>🌸 Trắc Nghiệm Nguyên Tố</h3><p>Thử tài"
+        " trắc nghiệm tên tiếng Anh chuẩn IUPAC.</p></div>",
+        unsafe_allow_html=True,
+    )
+    if st.button("Chơi Trắc Nghiệm 🚀", key="btn_quiz"):
+      st.session_state.page = "quiz"
+      st.rerun()
+
+    st.markdown(
+        "<div class='card'><h3>🧁 Điền Khuyết Ô Số</h3><p>Hoàn thành thông số"
+        " nguyên tử và hóa trị.</p></div>",
+        unsafe_allow_html=True,
+    )
+    if st.button("Chơi Điền Khuyết 🧩", key="btn_fill"):
+      st.session_state.page = "fill"
+      st.rerun()
+
+  with col2:
+    st.markdown(
+        "<div class='card'><h3>🍓 Tự Luận Tên & Ký Hiệu</h3><p>Gõ chính xác"
+        " tên tiếng Anh hoặc ký hiệu.</p></div>",
+        unsafe_allow_html=True,
+    )
+    if st.button("Chơi Tự Luận ✍️", key="btn_essay"):
+      st.session_state.page = "essay"
+      st.rerun()
+
+    st.markdown(
+        "<div class='card'><h3>🎀 Fast Card (Flashcard)</h3><p>Lật thẻ ghi"
+        " nhớ siêu tốc đáng yêu.</p></div>",
+        unsafe_allow_html=True,
+    )
+    if st.button("Xem Flashcard ⚡", key="btn_flash"):
+      st.session_state.page = "flashcard"
+      st.rerun()
+
+# --- CHẾ ĐỘ TRẮC NGHIỆM ---
+elif st.session_state.page == "quiz":
+  if st.button("⬅ Về Lâu Đài"):
+    st.session_state.page = "home"
+    st.rerun()
+
+  st.markdown(
+      "<h2>🌸 Thử Thách Trắc Nghiệm Nguyên Tố</h2>", unsafe_allow_html=True
+  )
+
+  # Chọn level
+  level = st.selectbox("Chọn Cấp Độ (Level):", [1, 2, 3], format_func=lambda x: f"Level {x}")
+
+  if "current_q" not in st.session_state:
+    st.session_state.current_elem = random.choice(ELEMENTS)
+    elem = st.session_state.current_elem
+    correct = elem["name"] if level != 3 else elem["symbol"]
+    wrong_pool = (
+        [e["name"] for e in ELEMENTS if e["name"] != correct]
+        if level != 3
+        else [e["symbol"] for e in ELEMENTS if e["symbol"] != correct]
+    )
+    options = random.sample(wrong_pool, 3) + [correct]
+    random.shuffle(options)
+    st.session_state.options = options
+    st.session_state.correct = correct
+
+  elem = st.session_state.current_elem
+  if level == 1:
+    q_text = f"Tên tiếng Anh (IUPAC) của nguyên tố ký hiệu **{elem['symbol']}** là gì?"
+  elif level == 2:
+    q_text = (
+        f"Nguyên tố nào có nguyên tử khối KLNT = {elem['mass']} và ký hiệu"
+        f" **{elem['symbol']}**?"
+    )
+  else:
+    q_text = (
+        f"Nguyên tố **{elem['name']}** có số hiệu nguyên tử {elem['number']}."
+        " Ký hiệu là gì?"
+    )
+
+  st.write(q_text)
+
+  ans = st.radio("Chọn đáp án đúng:", st.session_state.options, key="quiz_choice")
+
+  if st.button("Gửi Đáp Án"):
+    if ans == st.session_state.correct:
+      st.success("🎉 Chính xác tuyệt vời! +10 điểm 💕")
+      st.session_state.score += 10
+    else:
+      st.error(
+          f"❌ Sai rồi! Đáp án đúng là: **{st.session_state.correct}**"
+      )
+
+    # Đổi câu hỏi mới
+    if st.button("Câu hỏi tiếp theo ➡"):
+      del st.session_state.current_q
+      st.rerun()
+
+  st.markdown(f"**Điểm hiện tại:** {st.session_state.score}")
+
+# --- CÁC TRÁNG KHÁC (Tự luận, Điền khuyết, Flashcard) ---
+elif st.session_state.page == "essay":
+  if st.button("⬅ Về Lâu Đài"):
+    st.session_state.page = "home"
+    st.rerun()
+  st.markdown(
+      "<h2>🍓 Chế độ Tự Luận (Đang phát triển, bấm về trang chủ nhé!)</h2>",
+      unsafe_allow_html=True,
+  )
+
+elif st.session_state.page == "fill":
+  if st.button("⬅ Về Lâu Đài"):
+    st.session_state.page = "home"
+    st.rerun()
+  st.markdown(
+      "<h2>🧁 Chế độ Điền Khuyết (Đang phát triển, bấm về trang chủ nhé!)</h2>",
+      unsafe_allow_html=True,
+  )
+
+elif st.session_state.page == "flashcard":
+  if st.button("⬅ Về Lâu Đài"):
+    st.session_state.page = "home"
+    st.rerun()
+  st.markdown(
+      "<h2>🎀 Fast Card Flashcard (Đang phát triển, bấm về trang chủ"
+      " nhé!)</h2>",
+      unsafe_allow_html=True,
+  )
